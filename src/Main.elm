@@ -73,7 +73,7 @@ view model =
             , height "500"
             , viewBox "0 0 500 500"
             ]
-            [ Svg.circle [ cx "250", cy "250", r "200", strokeWidth "10", stroke "black", fill "white" ] []
+            [ Svg.circle [ cx "250", cy "250", r "200", strokeWidth "12", stroke "black", fill "white" ] []
             , arrow { rotationAngle = hour, width = 12, length = 80, color = "black" }
             , arrow { rotationAngle = minute, width = 8, length = 130, color = "black" }
             , arrow { rotationAngle = second, width = 4, length = 170, color = "red" }
