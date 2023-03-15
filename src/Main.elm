@@ -71,13 +71,13 @@ view : Model -> Html Msg
 view model =
     let
         hour =
-            String.fromInt (Time.toHour model.zone model.time * 30)
+            Time.toHour model.zone model.time * 30
 
         minute =
-            String.fromInt (Time.toMinute model.zone model.time * 6)
+            Time.toMinute model.zone model.time * 6
 
         second =
-            String.fromInt (Time.toSecond model.zone model.time * 6)
+            Time.toSecond model.zone model.time * 6
     in
     div []
         [ Svg.svg
@@ -86,41 +86,41 @@ view model =
             , viewBox "0 0 500 500"
             ]
             [ Svg.circle [ cx "250", cy "250", r "200", strokeWidth "10", stroke "black", fill "white" ] []
-            , Svg.line
-                [ x1 "250"
-                , y1 "250"
-                , x2 "250"
-                , y2 "160"
-                , stroke "black"
-                , strokeWidth "16"
-                , strokeLinecap "round"
-                , style <| "transform-origin: center; transform: rotate(" ++ hour ++ "deg)"
-                ]
-                []
-            , Svg.line
-                [ x1 "250"
-                , y1 "250"
-                , x2 "250"
-                , y2 "120"
-                , stroke "black"
-                , strokeWidth "10"
-                , strokeLinecap "round"
-                , style <| "transform-origin: center; transform: rotate(" ++ minute ++ "deg)"
-                ]
-                []
-            , Svg.line
-                [ x1 "250"
-                , y1 "250"
-                , x2 "250"
-                , y2 "80"
-                , stroke "red"
-                , strokeWidth "4"
-                , strokeLinecap "round"
-                , style <| "transform-origin: center; transform: rotate(" ++ second ++ "deg)"
-                ]
-                []
-              , Svg.circle [ cx "250", cy "250", r "4" ] []
+            , arrow { rotationAngle = hour, width = 12, length = 80, color = "black" }
+            , arrow { rotationAngle = minute, width = 8, length = 130, color = "black" }
+            , arrow { rotationAngle = second, width = 4, length = 170, color = "red" }
+            , Svg.circle [ cx "250", cy "250", r "4" ] []
             ]
         , button [ onClick Pause ]
-            [ text (if model.isPaused then "Play" else "Pause") ]
+            [ text
+                (if model.isPaused then
+                    "Play"
+
+                 else
+                    "Pause"
+                )
+            ]
         ]
+
+
+type alias ArrowParams =
+    { rotationAngle : Int
+    , width : Int
+    , length : Int
+    , color : String
+    }
+
+
+arrow : ArrowParams -> Svg.Svg Msg
+arrow params =
+    Svg.line
+        [ x1 "250"
+        , y1 "250"
+        , x2 "250"
+        , y2 (String.fromInt (250 - params.length))
+        , stroke params.color
+        , strokeWidth (String.fromInt params.width)
+        , strokeLinecap "round"
+        , style <| "transform-origin: center; transform: rotate(" ++ String.fromInt params.rotationAngle ++ "deg)"
+        ]
+        []
