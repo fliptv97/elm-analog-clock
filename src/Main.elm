@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (..)
-import Html.Events exposing (onClick)
 import Svg
 import Svg.Attributes exposing (..)
 import Task
@@ -22,13 +21,12 @@ main =
 type alias Model =
     { zone : Time.Zone
     , time : Time.Posix
-    , isPaused : Bool
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0) False
+    ( Model Time.utc (Time.millisToPosix 0)
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -36,7 +34,6 @@ init _ =
 type Msg
     = Tick Time.Posix
     | AdjustTimeZone Time.Zone
-    | Pause
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,19 +49,10 @@ update msg model =
             , Cmd.none
             )
 
-        Pause ->
-            ( { model | isPaused = not model.isPaused }
-            , Cmd.none
-            )
-
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    if model.isPaused then
-        Sub.none
-
-    else
-        Time.every 1000 Tick
+subscriptions _ =
+    Time.every 1000 Tick
 
 
 view : Model -> Html Msg
@@ -90,15 +78,6 @@ view model =
             , arrow { rotationAngle = minute, width = 8, length = 130, color = "black" }
             , arrow { rotationAngle = second, width = 4, length = 170, color = "red" }
             , Svg.circle [ cx "250", cy "250", r "4" ] []
-            ]
-        , button [ onClick Pause ]
-            [ text
-                (if model.isPaused then
-                    "Play"
-
-                 else
-                    "Pause"
-                )
             ]
         ]
 
